@@ -11,3 +11,5 @@ wheels/
 
 # Environment files:
 *.env
+
+*.lock
