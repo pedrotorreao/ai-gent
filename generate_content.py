@@ -20,6 +20,10 @@ def generate_content(client, messages, verbose=False):
         print(f"Prompt tokens: {prompt_tokens}")
         print(f"Response tokens: {response_tokens}")
 
+    if response.candidates:
+        for candidate in response.candidates:
+            messages.append(candidate.content)
+
     if not response.function_calls:
         return response.text
 
@@ -41,3 +45,5 @@ def generate_content(client, messages, verbose=False):
 
     if not function_responses:
         raise Exception("no function responses generated, exiting.")
+
+    messages.append(types.Content(role="user", parts=function_responses))

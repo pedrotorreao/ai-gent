@@ -7,6 +7,7 @@ from google.genai import types
 
 from generate_content import generate_content
 from call_function import *
+from config import MAX_ITERS
 
 
 def main():
@@ -38,41 +39,25 @@ def main():
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
     ]
 
-    generate_content(client, messages, verbose_mode)
+    iteration_count = 0
+    while True:
+        iteration_count += 1
+        if iteration_count > MAX_ITERS:
+            print(
+                f"You fave reached your iteration limit ({MAX_ITERS}). Add credits if you wish to continue."
+            )
+            sys.exit(1)
 
-    # response = client.models.generate_content(
-    #     model="gemini-2.0-flash-001",
-    #     contents=messages,
-    #     config=types.GenerateContentConfig(
-    #         tools=[AVAILABLE_FUNCTIONS], system_instruction=SYSTEM_PROMPT
-    #     ),
-    # )
+        try:
+            final_response = generate_content(client, messages, verbose_mode)
+            if final_response:
+                print("Final response:")
+                print(final_response)
+                break
+        except Exception as e:
+            print(f"Error in generate_content: {e}")
 
-    # usage = response.usage_metadata
-    # prompt_tokens = usage.prompt_token_count
-    # response_tokens = usage.candidates_token_count
-
-    # if response.function_calls:
-    #     function_call_part = response.function_calls[0]
-
-    #     func_call_result = call_function(function_call_part, verbose_mode)
-
-    # if verbose_mode:
-    #     print(f"Calling function: {function_call_part.name}({function_call_part.args})")
-    #     # print(f"User prompt: {{{user_prompt}}}")
-    #     # print(f"Prompt tokens: {{{prompt_tokens}}}")
-    #     # print(f"Response tokens: {{{response_tokens}}}")
-    # else:
-    #     if response.function_calls:
-    #         function_call_part = response.function_calls[0]
-    #         print(
-    #             f"Calling function: {function_call_part.name}({function_call_part.args})"
-    #         )
-    #     else:
-    #         print(response.text)
-
-    # print(f'Prompt tokens: {prompt_tokens}')
-    # print(f'Response tokens: {response_tokens}')
+    # generate_content(client, messages, verbose_mode)
 
 
 if __name__ == "__main__":
