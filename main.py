@@ -20,6 +20,7 @@ def main():
     else:
         stdin_args = sys.argv[1:]
 
+
     if not stdin_args:
         print("Hello, it's your AI-gent!")
         print("\nNo prompt given. Please, enter a valid prompt.")

@@ -6,19 +6,22 @@ from call_function import *
 
 def generate_content(client, messages, verbose=False):
     response = client.models.generate_content(
-        model="gemini-2.0-flash-001",
+        model="gemini-2.5-flash",
         contents=messages,
         config=types.GenerateContentConfig(
             tools=[AVAILABLE_FUNCTIONS], system_instruction=SYSTEM_PROMPT
         ),
     )
 
+    if response.usage_metadata is None:
+        raise RuntimeError("token limit exceeded")
+
     if verbose:
         prompt_tokens = response.usage_metadata.prompt_token_count
         response_tokens = response.usage_metadata.candidates_token_count
 
-        print(f"Prompt tokens: {prompt_tokens}")
-        print(f"Response tokens: {response_tokens}")
+    print(f"Prompt tokens: {prompt_tokens}")
+    print(f"Response tokens: {response_tokens}")
 
     if response.candidates:
         for candidate in response.candidates:
