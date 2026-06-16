@@ -20,6 +20,8 @@ schema_get_files_info = types.FunctionDeclaration(
 def get_files_info(working_directory, directory="."):
     full_path_parent = os.path.abspath(working_directory)
     full_path_child = os.path.abspath(os.path.join(working_directory, directory))
+    
+    print(f"Result for the '{directory}' directory:")
 
     if not full_path_child.startswith(full_path_parent):
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
